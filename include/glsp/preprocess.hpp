@@ -9,11 +9,7 @@
 #include "definition.hpp"
 #include "config.hpp"
 
-#if defined(__GNUC__) && __GNUC__ < 8
-    #include <experimental/filesystem>
-#else
-    #include <filesystem>
-#endif
+#include <filesystem>
 #include <map>
 #include <set>
 #include <string>
@@ -26,15 +22,7 @@
 
 namespace glshader::process
 {
-
-    #if defined(__GNUC__) && __GNUC__ < 8
-    #include <experimental/filesystem>
-        namespace files = std::experimental::filesystem;
-    #else
-        namespace files = std::filesystem;
-    #endif
-
-
+    namespace files = std::filesystem;
 
     /* Refers to in-shader version declaration profile, e.g. #version 450 core/compatibility */
     enum class shader_profile

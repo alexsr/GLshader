@@ -1,6 +1,5 @@
 #pragma once
 
-#include "files.hpp"
 #include <glsp/preprocess.hpp>
 
 namespace glshader::process::impl::operation

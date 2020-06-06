@@ -8,8 +8,6 @@
 #include "classify.hpp"
 #include "skip.hpp"
 #include "macro.hpp"
-#include "extensions.hpp"
-#include "../opengl/loader.hpp"
 
 #include <fstream>
 #include <iterator>
@@ -25,8 +23,6 @@ namespace glshader::process
     namespace ctrl = impl::control;
     namespace skip = impl::skip;
     namespace macro = impl::macro;
-    namespace ext = impl::ext;
-    namespace lgl = impl::loader;
 
     void process_impl(const files::path& file_path, const std::string& contents, const std::vector<files::path>& include_directories,
         processed_file& processed, std::set<files::path>& unique_includes,
@@ -555,24 +551,6 @@ namespace glshader::process
     {
         constexpr uint32_t NUM_EXTENSIONS    = 0x821D;
         constexpr uint32_t EXTENSIONS        = 0x1F03;
-        static const void (*glGetIntegerv)(uint32_t, int*) = nullptr;
-        static const uint8_t* (*glGetStringi)(uint32_t, int) = nullptr;
-
-        static bool gl_initialized = false;
-        if (!gl_initialized || !lgl::valid())
-        {
-            lgl::reload();
-            if (!glGetIntegerv) glGetIntegerv   = reinterpret_cast<decltype(glGetIntegerv)>(lgl::load_function("glGetIntegerv"));
-            if (!glGetStringi)  glGetStringi    = reinterpret_cast<decltype(glGetStringi)>(lgl::load_function("glGetStringi"));
-            if (glGetIntegerv && glGetStringi)
-            {
-                gl_initialized = true;
-                int n;
-                glGetIntegerv(NUM_EXTENSIONS, &n);
-                for (auto i = 0; i < n; ++i)
-                    ext::enable_extension(reinterpret_cast<const char*>(glGetStringi(EXTENSIONS, i)));
-            }
-        }
 
         processed_file processed;
         processed.version = -1;

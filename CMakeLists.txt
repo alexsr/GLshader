@@ -16,13 +16,9 @@ endif()
 # -------------------------------------------------------------
 
 add_library(glsp    "src/definition.cpp"
-                    "src/compiler/compiler.cpp"
-                    "src/compress/huffman.cpp"
-                    "src/opengl/loader.cpp"
                     "src/preprocessor/classify.cpp"
                     "src/preprocessor/control.cpp"
                     "src/preprocessor/eval.cpp"
-                    "src/preprocessor/extensions.cpp"
                     "src/preprocessor/macro.cpp"
                     "src/preprocessor/preprocessor.cpp"
                     "src/preprocessor/skip.cpp" )
@@ -43,23 +39,11 @@ target_include_directories( glsp
 
 
 # -------------------------------------------------------------
-# link libraries
-# -------------------------------------------------------------
-
-if (MSVC)
-    target_link_libraries(glsp PUBLIC opengl32)
-    #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
-elseif (UNIX)
-    target_link_libraries(glsp PUBLIC dl stdc++fs)
-endif()
-
-
-# -------------------------------------------------------------
 # set properties
 # -------------------------------------------------------------
 
 set_target_properties(glsp  PROPERTIES LINKER_LANGUAGE CXX
-                            CXX_STANDARD 17
+                            CXX_STANDARD 20
                             CXX_STANDARD_REQUIRED YES)
 
 
@@ -108,26 +92,4 @@ if(EXPORT_BUILD_TREE)
     export(EXPORT glsp-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/glspConfig.cmake NAMESPACE mpUtils::)
     # register package in users package registry
     export(PACKAGE glsp)
-endif()
-
-
-# -------------------------------------------------------------
-# compile examples if user wants them
-# -------------------------------------------------------------
-
-option(GLSP_BUILD_EXECUTABLE OFF "Builds the example executable(s).")
-
-if(GLSP_BUILD_EXECUTABLE)
-    file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/examples ${PROJECT_SOURCE_DIR}/examples/*)
-    message("[GLSP] Enabled Executables. Adding...")
-    foreach(example ${children})
-        if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/examples/${example})
-            if (NOT ${example} MATCHES "\\..*")
-                if(EXISTS ${CMAKE_SOURCE_DIR}/examples/${example}/CMakeLists.txt)
-                    message("\t\t \"${example}\"")
-                    add_subdirectory(${CMAKE_SOURCE_DIR}/examples/${example})
-                endif()
-            endif()
-        endif()
-    endforeach()
 endif()

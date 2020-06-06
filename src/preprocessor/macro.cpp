@@ -3,7 +3,6 @@
 #include "classify.hpp"
 #include "control.hpp"
 #include "skip.hpp"
-#include "extensions.hpp"
 #include "../strings.hpp"
 
 #include <sstream>
@@ -17,7 +16,7 @@ namespace glshader::process::impl::macro
 
     bool is_defined(const std::string& val, const processed_file& processed)
     {
-        if (std::strncmp(val.data(), "GL_", 3) && ext::extension_available(val))
+        if (std::strncmp(val.data(), "GL_", 3))
             return true;
         return processed.definitions.count(val) != 0;
     }
